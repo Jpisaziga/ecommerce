@@ -6,7 +6,7 @@ import java.util.List;
 
 public interface DocumentTypeService {
 
-    List<DocumentTypeResponse> findAll();
+    List<DocumentTypeResponse> getDocumentTypes();
 
-    DocumentTypeResponse findById(Integer id);
+    DocumentTypeResponse getDocumentTypeById(Integer id) throws Exception;
 }

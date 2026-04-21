@@ -14,19 +14,23 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/user")
-
 public class UserController {
+
     @Autowired
     private UserService userService;
 
     @GetMapping("/all")
-    public List<UserResponse> getAll(){
+    public List<UserResponse> getAllUser() {
         return userService.getUsers();
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<UserResponse> getUserById(@PathVariable Integer id) throws Exception {
-        return new ResponseEntity<>(userService.getUserById(id),
-                HttpStatus.OK);
+        return new ResponseEntity<>(userService.getUserById(id), HttpStatus.OK);
+    }
+
+    @GetMapping("/email/{email}")
+    public ResponseEntity<UserResponse> getUserByEmail(@PathVariable String email) throws Exception {
+        return new ResponseEntity<>(userService.getUserByEmail(email), HttpStatus.OK);
     }
 }

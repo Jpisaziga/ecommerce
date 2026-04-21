@@ -17,16 +17,16 @@ public class DocumentTypeServiceImpl implements DocumentTypeService {
     private DocumentTypeRepository documentTypeRepository;
 
     @Override
-    public List<DocumentTypeResponse> findAll() {
+    public List<DocumentTypeResponse> getDocumentTypes() {
         return DocumentTypeMapper.modelToDocumentTypeResponseList(
                 documentTypeRepository.findAll()
         );
     }
 
     @Override
-    public DocumentTypeResponse findById(Integer id) {
+    public DocumentTypeResponse getDocumentTypeById(Integer id) throws Exception {
         DocumentType documentType = documentTypeRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("DocumentType no encontrado"));
+                .orElseThrow(() -> new Exception("DocumentType no encontrado"));
 
         return DocumentTypeMapper.modelToDocumentTypeResponse(documentType);
     }
