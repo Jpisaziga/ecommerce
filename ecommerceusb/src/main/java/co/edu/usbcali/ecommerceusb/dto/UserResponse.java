@@ -1,5 +1,6 @@
 package co.edu.usbcali.ecommerceusb.dto;
 
+
 import lombok.Builder;
 import lombok.Getter;
 
@@ -7,7 +8,6 @@ import lombok.Getter;
 @Getter
 
 public class UserResponse {
-
     private Integer id;
     private String fullName;
     private String email;

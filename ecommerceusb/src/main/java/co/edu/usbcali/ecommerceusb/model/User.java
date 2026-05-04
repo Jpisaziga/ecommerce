@@ -2,7 +2,8 @@ package co.edu.usbcali.ecommerceusb.model;
 
 import jakarta.persistence.*;
 import lombok.*;
-import java.sql.Date;
+
+import java.time.LocalDate;
 import java.time.OffsetDateTime;
 
 @Data
@@ -14,8 +15,11 @@ import java.time.OffsetDateTime;
         name = "users",
         schema = "public",
         uniqueConstraints = {
-                @UniqueConstraint(columnNames = {"email"}),
-                @UniqueConstraint(columnNames = {"document_type_id", "document_number"})
+                @UniqueConstraint(name = "uq_users_document", columnNames = {"document_type_id", "document_number"})
+        },
+        indexes = {
+                @Index(name = "idx_users_document", columnList = "document_type_id, document_number"),
+                @Index(name = "idx_users_country", columnList = "country")
         }
 )
 public class User {
@@ -47,7 +51,7 @@ public class User {
     private String documentNumber;
 
     @Column(name = "birth_date", nullable = false)
-    private Date birthDate;
+    private LocalDate birthDate;
 
     @Column(name = "country", nullable = false, columnDefinition = "text")
     private String country;

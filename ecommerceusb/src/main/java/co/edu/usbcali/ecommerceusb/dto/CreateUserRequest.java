@@ -1,10 +1,9 @@
 package co.edu.usbcali.ecommerceusb.dto;
 
 import lombok.AllArgsConstructor;
-import lombok.Getter;
 
 @AllArgsConstructor
-@Getter
+@lombok.Getter
 
 public class CreateUserRequest {
     private String fullName;
@@ -15,5 +14,4 @@ public class CreateUserRequest {
     private String birthDate;
     private String country;
     private String address;
-
 }

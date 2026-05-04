@@ -2,6 +2,7 @@ package co.edu.usbcali.ecommerceusb.model;
 
 import jakarta.persistence.*;
 import lombok.*;
+
 import java.time.OffsetDateTime;
 
 @Data
@@ -12,7 +13,13 @@ import java.time.OffsetDateTime;
 @Table(
         name = "cart_items",
         schema = "public",
-        uniqueConstraints = @UniqueConstraint(columnNames = {"cart_id", "product_id"})
+        uniqueConstraints = {
+                @UniqueConstraint(name = "uq_cart_product", columnNames = {"cart_id", "product_id"})
+        },
+        indexes = {
+                @Index(name = "idx_cart_items_cart", columnList = "cart_id"),
+                @Index(name = "idx_cart_items_product", columnList = "product_id")
+        }
 )
 public class CartItem {
 

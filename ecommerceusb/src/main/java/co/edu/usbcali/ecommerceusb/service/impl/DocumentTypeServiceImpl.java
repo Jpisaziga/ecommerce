@@ -7,7 +7,6 @@ import co.edu.usbcali.ecommerceusb.repository.DocumentTypeRepository;
 import co.edu.usbcali.ecommerceusb.service.DocumentTypeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import java.util.List;
 
 @Service
@@ -18,16 +17,19 @@ public class DocumentTypeServiceImpl implements DocumentTypeService {
 
     @Override
     public List<DocumentTypeResponse> getDocumentTypes() {
-        return DocumentTypeMapper.modelToDocumentTypeResponseList(
-                documentTypeRepository.findAll()
-        );
+        List<DocumentType> documentTypes = documentTypeRepository.findAll();
+        if (documentTypes.isEmpty()) return List.of();
+        return DocumentTypeMapper.modelToDocumentTypeResponseList(documentTypes);
     }
 
     @Override
     public DocumentTypeResponse getDocumentTypeById(Integer id) throws Exception {
+        if (id == null || id <= 0) {
+            throw new Exception("ingresar un id válido para buscar");
+        }
         DocumentType documentType = documentTypeRepository.findById(id)
-                .orElseThrow(() -> new Exception("DocumentType no encontrado"));
-
+                .orElseThrow(() -> new Exception(
+                        String.format("documento no encontrado: %d", id)));
         return DocumentTypeMapper.modelToDocumentTypeResponse(documentType);
     }
 }

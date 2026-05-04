@@ -11,7 +11,12 @@ import lombok.*;
 @Table(
         name = "product_categories",
         schema = "public",
-        uniqueConstraints = @UniqueConstraint(columnNames = {"product_id", "category_id"})
+        uniqueConstraints = {
+                @UniqueConstraint(name = "uq_product_category", columnNames = {"product_id", "category_id"})
+        },
+        indexes = {
+                @Index(name = "idx_product_categories_category", columnList = "category_id, product_id")
+        }
 )
 public class ProductCategory {
 

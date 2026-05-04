@@ -2,7 +2,8 @@ package co.edu.usbcali.ecommerceusb.model;
 
 import jakarta.persistence.*;
 import lombok.*;
-import java.sql.Timestamp;
+
+import java.time.OffsetDateTime;
 
 @Data
 @Builder
@@ -17,12 +18,17 @@ public class Category {
     @Column(name = "id")
     private Integer id;
 
-    @Column(name = "name", nullable = false)
+    @Column(name = "name", nullable = false, columnDefinition = "text")
     private String name;
 
-    @Column(name = "parent_id")
-    private Integer parentId;  // Auto-referencia a la misma tabla
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(
+            name = "parent_id",
+            foreignKey = @ForeignKey(name = "fk_categories_parent"),
+            referencedColumnName = "id"
+    )
+    private Category parent;
 
     @Column(name = "created_at", nullable = false, updatable = false)
-    private Timestamp createdAt;
+    private OffsetDateTime createdAt;
 }

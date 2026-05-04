@@ -2,6 +2,7 @@ package co.edu.usbcali.ecommerceusb.model;
 
 import jakarta.persistence.*;
 import lombok.*;
+
 import java.time.OffsetDateTime;
 
 @Data
@@ -9,7 +10,13 @@ import java.time.OffsetDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "carts", schema = "public")
+@Table(
+        name = "carts",
+        schema = "public",
+        indexes = {
+                @Index(name = "idx_carts_user_status", columnList = "user_id,status")
+        }
+)
 public class Cart {
 
     @Id
@@ -26,12 +33,17 @@ public class Cart {
     )
     private User user;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "status", nullable = false, columnDefinition = "text")
-    private String status;
+    private CartStatus status;
 
     @Column(name = "created_at", nullable = false, updatable = false)
     private OffsetDateTime createdAt;
 
     @Column(name = "updated_at", nullable = false)
     private OffsetDateTime updatedAt;
+
+    public enum CartStatus {
+        ACTIVE, CHECKED_OUT, ABANDONED
+    }
 }

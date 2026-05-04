@@ -2,6 +2,7 @@ package co.edu.usbcali.ecommerceusb.model;
 
 import jakarta.persistence.*;
 import lombok.*;
+
 import java.math.BigDecimal;
 import java.time.OffsetDateTime;
 
@@ -10,7 +11,14 @@ import java.time.OffsetDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "orders", schema = "public")
+@Table(
+        name = "orders",
+        schema = "public",
+        indexes = {
+                @Index(name = "idx_orders_user_created_at", columnList = "user_id, created_at"),
+                @Index(name = "idx_orders_status_created_at", columnList = "status, created_at")
+        }
+)
 public class Order {
 
     @Id
@@ -27,13 +35,14 @@ public class Order {
     )
     private User user;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "status", nullable = false, columnDefinition = "text")
-    private String status;
+    private OrderStatus status;
 
     @Column(name = "total_amount", nullable = false, precision = 12, scale = 2)
     private BigDecimal totalAmount;
 
-    @Column(name = "currency", nullable = false, length = 3)
+    @Column(name = "currency", nullable = false, columnDefinition = "text")
     private String currency;
 
     @Column(name = "created_at", nullable = false, updatable = false)
@@ -44,4 +53,8 @@ public class Order {
 
     @Column(name = "cancelled_at")
     private OffsetDateTime cancelledAt;
+
+    public enum OrderStatus {
+        CREATED, PAID, CANCELLED
+    }
 }

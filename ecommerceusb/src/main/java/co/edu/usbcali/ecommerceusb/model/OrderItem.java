@@ -2,6 +2,7 @@ package co.edu.usbcali.ecommerceusb.model;
 
 import jakarta.persistence.*;
 import lombok.*;
+
 import java.math.BigDecimal;
 import java.time.OffsetDateTime;
 
@@ -10,7 +11,16 @@ import java.time.OffsetDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "order_items", schema = "public")
+@Table(
+        name = "order_items",
+        schema = "public",
+        uniqueConstraints = {
+                @UniqueConstraint(name = "uq_order_product", columnNames = {"order_id", "product_id"})
+        },
+        indexes = {
+                @Index(name = "idx_order_items_order", columnList = "order_id")
+        }
+)
 public class OrderItem {
 
     @Id
