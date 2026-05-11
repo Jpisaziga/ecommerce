@@ -47,6 +47,7 @@ public class ProductServiceImpl implements ProductService {
         Product product = Product.builder()
                 .name(request.getName())
                 .description(request.getDescription())
+                .imageUrl(request.getImageUrl())
                 .price(request.getPrice())
                 .available(request.getAvailable())
                 .createdAt(OffsetDateTime.now())
@@ -56,11 +57,36 @@ public class ProductServiceImpl implements ProductService {
         return toResponse(productRepository.save(product));
     }
 
+    @Override
+    public ProductResponse updateProduct(Integer id, CreateProductRequest request) throws Exception {
+        if (id == null || id <= 0) throw new Exception("Debe ingresar un id válido");
+        if (Objects.isNull(request)) throw new Exception("El request no puede ser nulo");
+        if (Objects.isNull(request.getName()) || request.getName().isBlank())
+            throw new Exception("El campo name no puede ser nulo");
+        if (Objects.isNull(request.getPrice()) || request.getPrice().doubleValue() <= 0)
+            throw new Exception("El campo price debe ser mayor a 0");
+        if (Objects.isNull(request.getAvailable()))
+            throw new Exception("El campo available no puede ser nulo");
+
+        Product product = productRepository.findById(id)
+                .orElseThrow(() -> new Exception("Product no encontrado con id: " + id));
+
+        product.setName(request.getName());
+        product.setDescription(request.getDescription());
+        product.setImageUrl(request.getImageUrl());
+        product.setPrice(request.getPrice());
+        product.setAvailable(request.getAvailable());
+        product.setUpdatedAt(OffsetDateTime.now());
+
+        return toResponse(productRepository.save(product));
+    }
+
     private ProductResponse toResponse(Product p) {
         return ProductResponse.builder()
                 .id(p.getId())
                 .name(p.getName())
                 .description(p.getDescription())
+                .imageUrl(p.getImageUrl())
                 .price(p.getPrice())
                 .available(p.getAvailable())
                 .createdAt(p.getCreatedAt())

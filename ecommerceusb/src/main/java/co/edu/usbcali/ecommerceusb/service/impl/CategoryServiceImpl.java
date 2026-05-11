@@ -55,6 +55,28 @@ public class CategoryServiceImpl implements CategoryService {
         return toResponse(categoryRepository.save(category));
     }
 
+    @Override
+    public CategoryResponse updateCategory(Integer id, CreateCategoryRequest request) throws Exception {
+        if (id == null || id <= 0) throw new Exception("Debe ingresar un id válido");
+        if (Objects.isNull(request)) throw new Exception("El request no puede ser nulo");
+        if (Objects.isNull(request.getName()) || request.getName().isBlank())
+            throw new Exception("El campo name no puede ser nulo");
+
+        Category category = categoryRepository.findById(id)
+                .orElseThrow(() -> new Exception("Category no encontrada con id: " + id));
+
+        Category parent = null;
+        if (request.getParentId() != null) {
+            parent = categoryRepository.findById(request.getParentId())
+                    .orElseThrow(() -> new Exception("Parent category no encontrada con id: " + request.getParentId()));
+        }
+
+        category.setName(request.getName());
+        category.setParent(parent);
+
+        return toResponse(categoryRepository.save(category));
+    }
+
     private CategoryResponse toResponse(Category c) {
         return CategoryResponse.builder()
                 .id(c.getId())

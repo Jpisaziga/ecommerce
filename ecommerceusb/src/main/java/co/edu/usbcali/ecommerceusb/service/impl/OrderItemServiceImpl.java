@@ -69,6 +69,34 @@ public class OrderItemServiceImpl implements OrderItemService {
         return toResponse(orderItemRepository.save(item));
     }
 
+    @Override
+    public OrderItemResponse updateOrderItem(Integer id, CreateOrderItemRequest request) throws Exception {
+        if (id == null || id <= 0) throw new Exception("Debe ingresar un id válido");
+        if (Objects.isNull(request)) throw new Exception("El request no puede ser nulo");
+        if (Objects.isNull(request.getOrderId()) || request.getOrderId() <= 0)
+            throw new Exception("El campo orderId debe ser mayor a 0");
+        if (Objects.isNull(request.getProductId()) || request.getProductId() <= 0)
+            throw new Exception("El campo productId debe ser mayor a 0");
+        if (Objects.isNull(request.getQuantity()) || request.getQuantity() <= 0)
+            throw new Exception("El campo quantity debe ser mayor a 0");
+
+        OrderItem item = orderItemRepository.findById(id)
+                .orElseThrow(() -> new Exception("OrderItem no encontrado con id: " + id));
+
+        Order order = orderRepository.findById(request.getOrderId())
+                .orElseThrow(() -> new Exception("Order no encontrada con id: " + request.getOrderId()));
+        Product product = productRepository.findById(request.getProductId())
+                .orElseThrow(() -> new Exception("Product no encontrado con id: " + request.getProductId()));
+
+        item.setOrder(order);
+        item.setProduct(product);
+        item.setQuantity(request.getQuantity());
+        item.setUnitPriceSnapshot(request.getUnitPriceSnapshot());
+        item.setLineTotal(request.getLineTotal());
+
+        return toResponse(orderItemRepository.save(item));
+    }
+
     private OrderItemResponse toResponse(OrderItem i) {
         return OrderItemResponse.builder()
                 .id(i.getId())

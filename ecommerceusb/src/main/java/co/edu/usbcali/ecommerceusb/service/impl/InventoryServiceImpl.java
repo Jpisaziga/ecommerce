@@ -58,6 +58,28 @@ public class InventoryServiceImpl implements InventoryService {
         return toResponse(inventoryRepository.save(inventory));
     }
 
+    @Override
+    public InventoryResponse updateInventory(Integer id, CreateInventoryRequest request) throws Exception {
+        if (id == null || id <= 0) throw new Exception("Debe ingresar un id válido");
+        if (Objects.isNull(request)) throw new Exception("El request no puede ser nulo");
+        if (Objects.isNull(request.getProductId()) || request.getProductId() <= 0)
+            throw new Exception("El campo productId debe ser mayor a 0");
+        if (Objects.isNull(request.getStock()) || request.getStock() < 0)
+            throw new Exception("El campo stock no puede ser negativo");
+
+        Inventory inventory = inventoryRepository.findById(id)
+                .orElseThrow(() -> new Exception("Inventory no encontrado con id: " + id));
+
+        Product product = productRepository.findById(request.getProductId())
+                .orElseThrow(() -> new Exception("Product no encontrado con id: " + request.getProductId()));
+
+        inventory.setProduct(product);
+        inventory.setStock(request.getStock());
+        inventory.setUpdatedAt(OffsetDateTime.now());
+
+        return toResponse(inventoryRepository.save(inventory));
+    }
+
     private InventoryResponse toResponse(Inventory i) {
         return InventoryResponse.builder()
                 .id(i.getId())

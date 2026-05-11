@@ -64,6 +64,33 @@ public class OrderServiceImpl implements OrderService {
         return toResponse(orderRepository.save(order));
     }
 
+    @Override
+    public OrderResponse updateOrder(Integer id, CreateOrderRequest request) throws Exception {
+        if (id == null || id <= 0) throw new Exception("Debe ingresar un id válido");
+        if (Objects.isNull(request)) throw new Exception("El request no puede ser nulo");
+        if (Objects.isNull(request.getUserId()) || request.getUserId() <= 0)
+            throw new Exception("El campo userId debe ser mayor a 0");
+        if (Objects.isNull(request.getTotalAmount()) || request.getTotalAmount().doubleValue() < 0)
+            throw new Exception("El campo totalAmount no puede ser negativo");
+        if (Objects.isNull(request.getCurrency()) || request.getCurrency().isBlank())
+            throw new Exception("El campo currency no puede ser nulo");
+        if (Objects.isNull(request.getStatus()) || request.getStatus().isBlank())
+            throw new Exception("El campo status no puede ser nulo");
+
+        Order order = orderRepository.findById(id)
+                .orElseThrow(() -> new Exception("Order no encontrada con id: " + id));
+
+        User user = userRepository.findById(request.getUserId())
+                .orElseThrow(() -> new Exception("User no encontrado con id: " + request.getUserId()));
+
+        order.setUser(user);
+        order.setStatus(Order.OrderStatus.valueOf(request.getStatus()));
+        order.setTotalAmount(request.getTotalAmount());
+        order.setCurrency(request.getCurrency());
+
+        return toResponse(orderRepository.save(order));
+    }
+
     private OrderResponse toResponse(Order o) {
         return OrderResponse.builder()
                 .id(o.getId())

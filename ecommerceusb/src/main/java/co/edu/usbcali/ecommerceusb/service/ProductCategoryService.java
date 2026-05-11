@@ -1,4 +1,3 @@
-// tarea
 package co.edu.usbcali.ecommerceusb.service;
 
 import co.edu.usbcali.ecommerceusb.dto.CreateProductCategoryRequest;
@@ -10,4 +9,5 @@ public interface ProductCategoryService {
     List<ProductCategoryResponse> getProductCategories();
     ProductCategoryResponse getProductCategoryById(Integer id) throws Exception;
     ProductCategoryResponse createProductCategory(CreateProductCategoryRequest request) throws Exception;
+    ProductCategoryResponse updateProductCategory(Integer id, CreateProductCategoryRequest request) throws Exception;
 }

@@ -1,4 +1,3 @@
-// tarea
 package co.edu.usbcali.ecommerceusb.service;
 
 import co.edu.usbcali.ecommerceusb.dto.CreatePaymentRequest;
@@ -10,4 +9,5 @@ public interface PaymentService {
     List<PaymentResponse> getPayments();
     PaymentResponse getPaymentById(Integer id) throws Exception;
     PaymentResponse createPayment(CreatePaymentRequest request) throws Exception;
+    PaymentResponse updatePayment(Integer id, CreatePaymentRequest request) throws Exception;
 }

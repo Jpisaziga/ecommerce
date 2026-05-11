@@ -62,6 +62,31 @@ public class PaymentServiceImpl implements PaymentService {
         return toResponse(paymentRepository.save(payment));
     }
 
+    @Override
+    public PaymentResponse updatePayment(Integer id, CreatePaymentRequest request) throws Exception {
+        if (id == null || id <= 0) throw new Exception("Debe ingresar un id válido");
+        if (Objects.isNull(request)) throw new Exception("El request no puede ser nulo");
+        if (Objects.isNull(request.getOrderId()) || request.getOrderId() <= 0)
+            throw new Exception("El campo orderId debe ser mayor a 0");
+        if (Objects.isNull(request.getStatus()) || request.getStatus().isBlank())
+            throw new Exception("El campo status no puede ser nulo");
+        if (Objects.isNull(request.getIdempotencyKey()) || request.getIdempotencyKey().isBlank())
+            throw new Exception("El campo idempotencyKey no puede ser nulo");
+
+        Payment payment = paymentRepository.findById(id)
+                .orElseThrow(() -> new Exception("Payment no encontrado con id: " + id));
+
+        Order order = orderRepository.findById(request.getOrderId())
+                .orElseThrow(() -> new Exception("Order no encontrada con id: " + request.getOrderId()));
+
+        payment.setOrder(order);
+        payment.setStatus(Payment.PaymentStatus.valueOf(request.getStatus()));
+        payment.setProviderRef(request.getProviderRef());
+        payment.setIdempotencyKey(request.getIdempotencyKey());
+
+        return toResponse(paymentRepository.save(payment));
+    }
+
     private PaymentResponse toResponse(Payment p) {
         return PaymentResponse.builder()
                 .id(p.getId())

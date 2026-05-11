@@ -1,4 +1,3 @@
-// tarea
 package co.edu.usbcali.ecommerceusb.service;
 
 import co.edu.usbcali.ecommerceusb.dto.CreateInventoryMovementRequest;
@@ -10,4 +9,5 @@ public interface InventoryMovementService {
     List<InventoryMovementResponse> getInventoryMovements();
     InventoryMovementResponse getInventoryMovementById(Integer id) throws Exception;
     InventoryMovementResponse createInventoryMovement(CreateInventoryMovementRequest request) throws Exception;
+    InventoryMovementResponse updateInventoryMovement(Integer id, CreateInventoryMovementRequest request) throws Exception;
 }

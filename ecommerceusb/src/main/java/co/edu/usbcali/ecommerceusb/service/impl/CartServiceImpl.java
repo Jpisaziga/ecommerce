@@ -20,7 +20,6 @@ public class CartServiceImpl implements CartService {
 
     @Autowired
     private CartRepository cartRepository;
-
     @Autowired
     private UserRepository userRepository;
 
@@ -56,6 +55,28 @@ public class CartServiceImpl implements CartService {
                 .createdAt(OffsetDateTime.now())
                 .updatedAt(OffsetDateTime.now())
                 .build();
+
+        return toResponse(cartRepository.save(cart));
+    }
+
+    @Override
+    public CartResponse updateCart(Integer id, CreateCartRequest request) throws Exception {
+        if (id == null || id <= 0) throw new Exception("Debe ingresar un id válido");
+        if (Objects.isNull(request)) throw new Exception("El request no puede ser nulo");
+        if (Objects.isNull(request.getUserId()) || request.getUserId() <= 0)
+            throw new Exception("El campo userId debe ser mayor a 0");
+        if (Objects.isNull(request.getStatus()) || request.getStatus().isBlank())
+            throw new Exception("El campo status no puede ser nulo");
+
+        Cart cart = cartRepository.findById(id)
+                .orElseThrow(() -> new Exception("Cart no encontrado con id: " + id));
+
+        User user = userRepository.findById(request.getUserId())
+                .orElseThrow(() -> new Exception("User no encontrado con id: " + request.getUserId()));
+
+        cart.setUser(user);
+        cart.setStatus(Cart.CartStatus.valueOf(request.getStatus()));
+        cart.setUpdatedAt(OffsetDateTime.now());
 
         return toResponse(cartRepository.save(cart));
     }

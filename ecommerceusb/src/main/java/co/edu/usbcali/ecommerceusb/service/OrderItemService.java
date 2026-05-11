@@ -1,4 +1,3 @@
-// tarea
 package co.edu.usbcali.ecommerceusb.service;
 
 import co.edu.usbcali.ecommerceusb.dto.CreateOrderItemRequest;
@@ -10,4 +9,5 @@ public interface OrderItemService {
     List<OrderItemResponse> getOrderItems();
     OrderItemResponse getOrderItemById(Integer id) throws Exception;
     OrderItemResponse createOrderItem(CreateOrderItemRequest request) throws Exception;
+    OrderItemResponse updateOrderItem(Integer id, CreateOrderItemRequest request) throws Exception;
 }

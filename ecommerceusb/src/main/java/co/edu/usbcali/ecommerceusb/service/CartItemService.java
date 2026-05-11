@@ -1,4 +1,3 @@
-// tarea
 package co.edu.usbcali.ecommerceusb.service;
 
 import co.edu.usbcali.ecommerceusb.dto.CartItemResponse;
@@ -10,4 +9,5 @@ public interface CartItemService {
     List<CartItemResponse> getCartItems();
     CartItemResponse getCartItemById(Integer id) throws Exception;
     CartItemResponse createCartItem(CreateCartItemRequest request) throws Exception;
+    CartItemResponse updateCartItem(Integer id, CreateCartItemRequest request) throws Exception;
 }

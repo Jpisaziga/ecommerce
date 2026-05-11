@@ -72,6 +72,37 @@ public class InventoryMovementServiceImpl implements InventoryMovementService {
         return toResponse(inventoryMovementRepository.save(movement));
     }
 
+    @Override
+    public InventoryMovementResponse updateInventoryMovement(Integer id, CreateInventoryMovementRequest request) throws Exception {
+        if (id == null || id <= 0) throw new Exception("Debe ingresar un id válido");
+        if (Objects.isNull(request)) throw new Exception("El request no puede ser nulo");
+        if (Objects.isNull(request.getProductId()) || request.getProductId() <= 0)
+            throw new Exception("El campo productId debe ser mayor a 0");
+        if (Objects.isNull(request.getType()) || request.getType().isBlank())
+            throw new Exception("El campo type no puede ser nulo");
+        if (Objects.isNull(request.getQty()) || request.getQty() <= 0)
+            throw new Exception("El campo qty debe ser mayor a 0");
+
+        InventoryMovement movement = inventoryMovementRepository.findById(id)
+                .orElseThrow(() -> new Exception("InventoryMovement no encontrado con id: " + id));
+
+        Product product = productRepository.findById(request.getProductId())
+                .orElseThrow(() -> new Exception("Product no encontrado con id: " + request.getProductId()));
+
+        Order order = null;
+        if (request.getOrderId() != null) {
+            order = orderRepository.findById(request.getOrderId())
+                    .orElseThrow(() -> new Exception("Order no encontrada con id: " + request.getOrderId()));
+        }
+
+        movement.setProduct(product);
+        movement.setOrder(order);
+        movement.setType(InventoryMovement.MovementType.valueOf(request.getType()));
+        movement.setQty(request.getQty());
+
+        return toResponse(inventoryMovementRepository.save(movement));
+    }
+
     private InventoryMovementResponse toResponse(InventoryMovement m) {
         return InventoryMovementResponse.builder()
                 .id(m.getId())

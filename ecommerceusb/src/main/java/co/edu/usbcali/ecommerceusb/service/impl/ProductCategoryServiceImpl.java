@@ -62,6 +62,29 @@ public class ProductCategoryServiceImpl implements ProductCategoryService {
         return toResponse(productCategoryRepository.save(pc));
     }
 
+    @Override
+    public ProductCategoryResponse updateProductCategory(Integer id, CreateProductCategoryRequest request) throws Exception {
+        if (id == null || id <= 0) throw new Exception("Debe ingresar un id válido");
+        if (Objects.isNull(request)) throw new Exception("El request no puede ser nulo");
+        if (Objects.isNull(request.getProductId()) || request.getProductId() <= 0)
+            throw new Exception("El campo productId debe ser mayor a 0");
+        if (Objects.isNull(request.getCategoryId()) || request.getCategoryId() <= 0)
+            throw new Exception("El campo categoryId debe ser mayor a 0");
+
+        ProductCategory pc = productCategoryRepository.findById(id)
+                .orElseThrow(() -> new Exception("ProductCategory no encontrado con id: " + id));
+
+        Product product = productRepository.findById(request.getProductId())
+                .orElseThrow(() -> new Exception("Product no encontrado con id: " + request.getProductId()));
+        Category category = categoryRepository.findById(request.getCategoryId())
+                .orElseThrow(() -> new Exception("Category no encontrada con id: " + request.getCategoryId()));
+
+        pc.setProduct(product);
+        pc.setCategory(category);
+
+        return toResponse(productCategoryRepository.save(pc));
+    }
+
     private ProductCategoryResponse toResponse(ProductCategory pc) {
         return ProductCategoryResponse.builder()
                 .id(pc.getId())

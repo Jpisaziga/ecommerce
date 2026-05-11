@@ -68,6 +68,33 @@ public class CartItemServiceImpl implements CartItemService {
         return toResponse(cartItemRepository.save(item));
     }
 
+    @Override
+    public CartItemResponse updateCartItem(Integer id, CreateCartItemRequest request) throws Exception {
+        if (id == null || id <= 0) throw new Exception("Debe ingresar un id válido");
+        if (Objects.isNull(request)) throw new Exception("El request no puede ser nulo");
+        if (Objects.isNull(request.getCartId()) || request.getCartId() <= 0)
+            throw new Exception("El campo cartId debe ser mayor a 0");
+        if (Objects.isNull(request.getProductId()) || request.getProductId() <= 0)
+            throw new Exception("El campo productId debe ser mayor a 0");
+        if (Objects.isNull(request.getQuantity()) || request.getQuantity() <= 0)
+            throw new Exception("El campo quantity debe ser mayor a 0");
+
+        CartItem item = cartItemRepository.findById(id)
+                .orElseThrow(() -> new Exception("CartItem no encontrado con id: " + id));
+
+        Cart cart = cartRepository.findById(request.getCartId())
+                .orElseThrow(() -> new Exception("Cart no encontrado con id: " + request.getCartId()));
+        Product product = productRepository.findById(request.getProductId())
+                .orElseThrow(() -> new Exception("Product no encontrado con id: " + request.getProductId()));
+
+        item.setCart(cart);
+        item.setProduct(product);
+        item.setQuantity(request.getQuantity());
+        item.setUpdatedAt(OffsetDateTime.now());
+
+        return toResponse(cartItemRepository.save(item));
+    }
+
     private CartItemResponse toResponse(CartItem i) {
         return CartItemResponse.builder()
                 .id(i.getId())
