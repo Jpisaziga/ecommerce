@@ -34,7 +34,7 @@ public class UserServiceImpl implements UserService {
             return List.of();
         }
 
-        return UserMapper.modelToUserResponse(users);
+        return UserMapper.modelToUserResponseList(users);
     }
 
     @Override

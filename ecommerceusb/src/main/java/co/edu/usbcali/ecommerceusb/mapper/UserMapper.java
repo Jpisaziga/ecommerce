@@ -9,13 +9,10 @@ import java.time.LocalDate;
 import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class UserMapper {
-
-    // User (Entity/Model) -> UserResponse (DTO)
-    public static UserResponse modelToUserResponse(User user) {
-        return UserResponse.builder()
+    public static UserResponse modelToUserResponse(User user){
+        return  UserResponse.builder()
                 .id(user.getId())
                 .fullName(user.getFullName())
                 .email(user.getEmail())
@@ -24,16 +21,10 @@ public class UserMapper {
                 .documentNumber(user.getDocumentNumber())
                 .build();
     }
-
-    public static List<UserResponse> modelToUserResponse(List<User> users) {
-        return users.stream()
-                .map(UserMapper::modelToUserResponse)
-                .collect(Collectors.toList());
+    public static List<UserResponse> modelToUserResponseList(List<User> users){
+        return users.stream().map(UserMapper::modelToUserResponse).toList();
     }
-
-    public static User createUserRequestToUser(CreateUserRequest createUserRequest,
-                                               DocumentType documentType){
-
+    public static User createUserRequestToUser(CreateUserRequest createUserRequest, DocumentType documentType){
         User user = User.builder()
                 .fullName(createUserRequest.getFullName())
                 .phone(createUserRequest.getPhone())
